@@ -75,7 +75,7 @@ const move = (s) => {
     }
 };
 
-const checkBoundaries = (s, boundaries) => {
+const moveAndCheckBoundaries = (s, boundaries) => {
     const { x, y } = s.head;
     const didCollide = s.body.some(p => p.x === x && p.y === y);
     if (didCollide) {
@@ -125,7 +125,7 @@ const removeApple = () => createPoint(-1, -1);
 
 const gameTick = (game) => {
     const hasApple = isAppleExist(game.apple);
-    let newSnakeState = checkBoundaries(game.snake, game.boundaries);
+    let newSnakeState = moveAndCheckBoundaries(game.snake, game.boundaries);
     let newAppleState = game.apple;
     let newScore = game.score;
     const shouldAppleAppear = Math.random();
