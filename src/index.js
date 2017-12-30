@@ -97,8 +97,13 @@ const moveAndCheckBoundaries = (s, boundaries) => {
     } else if (y === height && isVerticalDir && s.direction !== directions.UP) {
         newY = 0;
     }
+    const didTeleport = newY !== s.head.y || newX !== s.head.x;
+    const newBody = didTeleport
+        ? [...s.body.slice(1, s.body.length), s.head]
+        : s.body;
     return move(Object.assign({}, s, {
         head: createPoint(newX, newY),
+        body: newBody,
     }));
 };
 
