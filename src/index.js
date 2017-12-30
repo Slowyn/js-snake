@@ -296,14 +296,20 @@ function setListeners(onKeyPress) {
 
 function main() {
     const snakeRender = new SnakeRender('game', gameSize);
+    const scoreEl = document.getElementById('score');
     let state = initialGameState;
     const setDirection = (direction) => {
         state.snake = changeDirection(state.snake, direction);
     };
     setListeners(setDirection);
+    let { score } = state.score;
     const fps = new FpsCtrl(15, () => {
         state = gameTick(state);
         snakeRender.render(state);
+        if (score !== state.score) {
+            score = state.score;
+            scoreEl.innerHTML = state.score;
+        }
     });
     fps.start();
 }

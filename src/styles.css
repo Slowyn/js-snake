@@ -34,3 +34,13 @@ html, body {
 .apple {
     background-color: rgb(79, 211, 68);
 }
+
+.score {
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    font-family: 'Titillium Web', sans-serif;
+    font-size: 50px;
+    font-weight: 600;
+    line-height: 100px;
+}
