@@ -1,0 +1,36 @@
+* {
+    box-sizing: border-box;
+}
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+}
+.main-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: aliceblue;
+}
+.game {
+    width: 800px;
+    height: 400px;
+    border: 1px solid rgba(0,0,0, .3);
+    position: relative;
+    background-color: #FCFCFC;
+}
+
+.snake-head, .snake-part, .apple {
+    width: 20px;
+    height: 20px;
+    border: 1px solid rgba(146, 138, 255, 0.3);
+    background-color: rgb(76, 50, 90);
+    position: absolute;
+}
+
+.snake-head {
+    background-color: rgb(65, 162, 168);
+}
+.apple {
+    background-color: rgb(79, 211, 68);
+}
