@@ -19,22 +19,6 @@ html, body {
     position: relative;
     background-color: #FCFCFC;
 }
-
-.snake-head, .snake-part, .apple {
-    width: 20px;
-    height: 20px;
-    border: 1px solid rgba(146, 138, 255, 0.3);
-    background-color: rgb(76, 50, 90);
-    position: absolute;
-}
-
-.snake-head {
-    background-color: rgb(65, 162, 168);
-}
-.apple {
-    background-color: rgb(79, 211, 68);
-}
-
 .score {
     width: 100px;
     height: 100px;
