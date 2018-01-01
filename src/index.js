@@ -188,19 +188,10 @@ class SnakeRender {
     }
 
     drawGameField(bgColor, linesColor) {
-        const { ctx, canvas, cellSize } = this;
+        const { ctx, canvas } = this;
         const { width, height } = canvas;
-        ctx.fillStyle = bgColor;
-        ctx.strokeStyle = linesColor;
-        for (let x = cellSize; x < width; x += cellSize) {
-            ctx.moveTo(x, 0);
-            ctx.lineTo(x, height);
-        }
-        for (let y = cellSize; y < height; y += cellSize) {
-            ctx.moveTo(0, y);
-            ctx.lineTo(width, y);
-        }
-        ctx.stroke();
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, width, height);
     }
 
     coordinatesToReal({x, y}) {
@@ -211,7 +202,7 @@ class SnakeRender {
         };
     };
 
-    drawRect(point, color = 'rgb(76, 50, 90)') {
+    drawRect(point, color = '#CE5B20') {
         const { cellSize } = this;
         const { x, y } = this.coordinatesToReal(point);
         this.ctx.fillStyle = color;
@@ -220,7 +211,7 @@ class SnakeRender {
 
     drawSnake(snake) {
         snake.body.forEach(p => this.drawRect(p));
-        this.drawRect(snake.head, 'rgb(65, 162, 168)');
+        this.drawRect(snake.head);
     }
 
     drawApple(apple) {
