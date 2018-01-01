@@ -336,10 +336,11 @@ function main() {
     let { score } = state.score;
     let history = [state];
     const fps = new FpsCtrl(15, () => {
-        if (!isTravellingInPast) {
+        if (!isTravellingInPast && !state.snake.hasGameOver) {
             state = gameTick(state);
             history.push(state);
-        } else {
+        }
+        if (isTravellingInPast) {
             const { history: newHistory, frame } = travelToPast(history);
             state = frame;
             history = newHistory;
