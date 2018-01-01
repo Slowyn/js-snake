@@ -5,12 +5,14 @@ html, body {
     height: 100%;
     margin: 0;
     padding: 0;
+    font-family: 'Titillium Web', sans-serif;
 }
 .main-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: aliceblue;
+    background-color: #1c000f;
+    color: #e6e6e6;
 }
 .game {
     width: 800px;
@@ -19,12 +21,17 @@ html, body {
     position: relative;
     background-color: #FCFCFC;
 }
+.score-panel {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 .score {
     width: 100px;
     height: 100px;
     text-align: center;
-    font-family: 'Titillium Web', sans-serif;
     font-size: 50px;
     font-weight: 600;
-    line-height: 100px;
+    /*line-height: 100px;*/
+
 }

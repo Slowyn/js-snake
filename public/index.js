@@ -108,8 +108,10 @@ const moveAndCheckBoundaries = (s, boundaries) => {
 };
 
 const createApple = (s, boundaries) => {
-    const possibleXColl = Array.from({ length: boundaries.width - 1 }, (_, i) => i + 1).filter(p => !s.body.some(sp => sp.x === p));
-    const possibleYColl = Array.from({ length: boundaries.height - 1 }, (_, i) => i + 1).filter(p => !s.body.some(sp => sp.y === p));
+    const possibleXColl = Array.from({ length: boundaries.width - 1 }, (_, i) => i + 1)
+        .filter(x => !s.body.some(sp => sp.x === x) && x !== s.head.x);
+    const possibleYColl = Array.from({ length: boundaries.height - 1 }, (_, i) => i + 1)
+        .filter(y => !s.body.some(sp => sp.y === y) && y !== s.head.y);
     possibleXColl.push(s.head.x);
     possibleYColl.push(s.head.y);
     const x = possibleXColl[getRandomInt(0, possibleXColl.length - 1)];
@@ -214,8 +216,9 @@ class SnakeRender {
     }
 
     drawSnake(snake) {
-        snake.body.forEach(p => this.drawRect(p));
-        this.drawRect(snake.head);
+        const snakeColor = snake.hasGameOver ? '#ff2837' : '#CE5B20';
+        snake.body.forEach(p => this.drawRect(p, snakeColor));
+        this.drawRect(snake.head, snakeColor);
     }
 
     drawApple(apple) {
