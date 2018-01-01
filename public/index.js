@@ -331,7 +331,7 @@ function main() {
         onSpaceDown: () => { isTravellingInPast = true },
         onSpaceUp: () => { isTravellingInPast = false },
     });
-    let { score } = state.score;
+    let { score } = state;
     let history = [state];
     const fps = new FpsCtrl(15, () => {
         if (!isTravellingInPast && !state.snake.hasGameOver) {
