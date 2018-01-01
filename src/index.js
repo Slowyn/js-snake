@@ -9,7 +9,7 @@ const directions = {
     DOWN: 4,
 };
 
-const oppositeDirection = (dir) => {
+const oppositeDirection = dir => {
     switch (dir) {
         case directions.LEFT: return directions.RIGHT;
         case directions.RIGHT: return directions.LEFT;
@@ -19,7 +19,7 @@ const oppositeDirection = (dir) => {
     }
 };
 
-const isVerticalDirection = (dir) => dir === directions.UP || dir === directions.DOWN;
+const isVerticalDirection = dir => dir === directions.UP || dir === directions.DOWN;
 
 const gameSize = {
     width: 40,
@@ -44,7 +44,7 @@ const changeDirection = (s, direction) => {
     return Object.assign({}, s, { direction });
 };
 
-const move = (s) => {
+const move = s => {
     const body = [...s.body.slice(1, s.body.length), createPoint(s.head.x, s.head.y)];
     switch (s.direction) {
         case directions.LEFT:
@@ -107,13 +107,13 @@ const moveAndCheckBoundaries = (s, boundaries) => {
     }));
 };
 
-const createApple = (boundaries) => {
+const createApple = boundaries => {
     const x = getRandomInt(1, boundaries.width - 1);
     const y = getRandomInt(1, boundaries.height - 1);
     return createPoint(x, y);
 };
 
-const eatApple = (s) => {
+const eatApple = s => {
     const movedSnake = move(s);
     return Object.assign({}, s, {
         length: s.length + 1,
@@ -128,7 +128,7 @@ const hasBeenAppleEaten = (s, a) => s.head.x === a.x && s.head.y === a.y;
 
 const removeApple = () => createPoint(-1, -1);
 
-const gameTick = (game) => {
+const gameTick = game => {
     const hasApple = isAppleExist(game.apple);
     let newSnakeState = moveAndCheckBoundaries(game.snake, game.boundaries);
     let newAppleState = game.apple;
@@ -148,6 +148,19 @@ const gameTick = (game) => {
         apple: newAppleState,
         score: newScore,
     });
+};
+
+const travelToPast = history => {
+    if (history.length === 1) {
+        return {
+            history: history,
+            frame: history[0],
+        };
+    }
+    return {
+        history: history.slice(0, history.length - 1),
+        frame: history[history.length - 1],
+    }
 };
 
 const initialGameState = {
@@ -278,9 +291,17 @@ class FpsCtrl {
 }
 /*--------------------------------------------------------*/
 
-function setListeners(onKeyPress) {
+function setListeners({ onKeyPress, onSpaceDown, onSpaceUp}) {
+    document.addEventListener('keyup', e => {
+        if (e.keyCode === 32) {
+            onSpaceUp();
+        }
+    });
     document.addEventListener('keydown', (e) => {
         switch (e.keyCode) {
+            case 32: {
+                return onSpaceDown();
+            }
             case 37: {
                 return onKeyPress(directions.LEFT);
             }
@@ -303,13 +324,27 @@ function main() {
     const snakeRender = new SnakeRender('game', gameSize);
     const scoreEl = document.getElementById('score');
     let state = initialGameState;
-    const setDirection = (direction) => {
+    let isTravellingInPast = false;
+    const setDirection = direction => {
         state.snake = changeDirection(state.snake, direction);
     };
-    setListeners(setDirection);
+    setListeners({
+        onKeyPress: setDirection,
+        onSpaceDown: () => { isTravellingInPast = true },
+        onSpaceUp: () => { isTravellingInPast = false },
+    });
     let { score } = state.score;
+    let history = [state];
     const fps = new FpsCtrl(15, () => {
-        state = gameTick(state);
+        if (!isTravellingInPast) {
+            state = gameTick(state);
+            history.push(state);
+        } else {
+            const { history: newHistory, frame } = travelToPast(history);
+            state = frame;
+            history = newHistory;
+            console.log(history);
+        }
         snakeRender.render(state);
         if (score !== state.score) {
             score = state.score;
