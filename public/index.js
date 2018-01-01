@@ -108,12 +108,12 @@ const moveAndCheckBoundaries = (s, boundaries) => {
 };
 
 const createApple = (s, boundaries) => {
-    const possibleXColl = Array.from({ length: boundaries.width - 1 }, (_, i) => i + 1)
-        .filter(x => !s.body.some(sp => sp.x === x) && x !== s.head.x);
-    const possibleYColl = Array.from({ length: boundaries.height - 1 }, (_, i) => i + 1)
-        .filter(y => !s.body.some(sp => sp.y === y) && y !== s.head.y);
-    possibleXColl.push(s.head.x);
-    possibleYColl.push(s.head.y);
+    const possibleXColl = Array.from({ length: boundaries.width }, (_, i) => i)
+        .filter(x => !s.body.some(sp => sp.x === x))
+        .filter(x => s.head.x !== x);
+    const possibleYColl = Array.from({ length: boundaries.height }, (_, i) => i)
+        .filter(y => !s.body.some(sp => sp.y === y))
+        .filter(y => s.head.y !== y);
     const x = possibleXColl[getRandomInt(0, possibleXColl.length - 1)];
     const y = possibleYColl[getRandomInt(0, possibleYColl.length - 1)];
     return createPoint(x, y);
