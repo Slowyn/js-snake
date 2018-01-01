@@ -87,14 +87,14 @@ const moveAndCheckBoundaries = (s, boundaries) => {
     let newY = s.head.y;
     const { width, height } = boundaries;
     const isVerticalDir = isVerticalDirection(s.direction);
-    if (x === 0 && !isVerticalDir && s.direction !== directions.RIGHT) {
+    if (x <= 0 && !isVerticalDir && s.direction !== directions.RIGHT) {
         newX = width;
-    } else if (x === width && !isVerticalDir && s.direction !== directions.LEFT) {
+    } else if (x >= width && !isVerticalDir && s.direction !== directions.LEFT) {
         newX = 0;
     }
-    if (y === 0 && isVerticalDir && s.direction !== directions.DOWN) {
+    if (y <= 0 && isVerticalDir && s.direction !== directions.DOWN) {
         newY = height;
-    } else if (y === height && isVerticalDir && s.direction !== directions.UP) {
+    } else if (y >= height && isVerticalDir && s.direction !== directions.UP) {
         newY = 0;
     }
     const didTeleport = newY !== s.head.y || newX !== s.head.x;
