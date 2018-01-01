@@ -343,7 +343,6 @@ function main() {
             const { history: newHistory, frame } = travelToPast(history);
             state = frame;
             history = newHistory;
-            console.log(history);
         }
         snakeRender.render(state);
         if (score !== state.score) {
