@@ -107,9 +107,13 @@ const moveAndCheckBoundaries = (s, boundaries) => {
     }));
 };
 
-const createApple = boundaries => {
-    const x = getRandomInt(1, boundaries.width - 1);
-    const y = getRandomInt(1, boundaries.height - 1);
+const createApple = (s, boundaries) => {
+    const possibleXColl = Array.from({ length: boundaries.width - 1 }, (_, i) => i + 1).filter(p => !s.body.some(sp => sp.x === p));
+    const possibleYColl = Array.from({ length: boundaries.height - 1 }, (_, i) => i + 1).filter(p => !s.body.some(sp => sp.y === p));
+    possibleXColl.push(s.head.x);
+    possibleYColl.push(s.head.y);
+    const x = possibleXColl[getRandomInt(0, possibleXColl.length - 1)];
+    const y = possibleYColl[getRandomInt(0, possibleYColl.length - 1)];
     return createPoint(x, y);
 };
 
@@ -135,7 +139,7 @@ const gameTick = game => {
     let newScore = game.score;
     const shouldAppleAppear = Math.random();
     if (!hasApple && shouldAppleAppear > 0.8) {
-        newAppleState = createApple(game.boundaries);
+        newAppleState = createApple(game.snake, game.boundaries);
     }
 
     if (hasApple && hasBeenAppleEaten(newSnakeState, newAppleState) && !newSnakeState.hasGameOver) {
@@ -187,7 +191,7 @@ class SnakeRender {
         this.cellSize = (this.canvas.width / width + this.canvas.height / height) / 2;
     }
 
-    drawGameField(bgColor, linesColor) {
+    drawGameField() {
         const { ctx, canvas } = this;
         const { width, height } = canvas;
         ctx.fillStyle = '#000';
@@ -221,7 +225,7 @@ class SnakeRender {
     }
     render(game) {
         this.ctx.clearRect(0, 0, this.canvasSize.width, this.canvasSize.height);
-        this.drawGameField('#fff', '#33333355');
+        this.drawGameField();
         this.drawSnake(game.snake);
         this.drawApple(game.apple);
     };
