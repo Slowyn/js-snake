@@ -26,20 +26,33 @@ const gameSize = {
 
 const createPoint = (x, y) => ({ x, y });
 
+/*
+* How it would be awesome to have enums, clojures keywords, types or something like that in JS...
+* */
+const dirMutexes = {
+    ACQUIRED: 'ACQUIRED',
+    RELEASED: 'RELEASED',
+};
+
 const initialSnake = {
     length: 3,
     head: createPoint(10, 10),
     tail: [createPoint(8, 10), createPoint(9, 10)],
     direction: directions.RIGHT,
     hasGameOver: false,
+    dirMutex: dirMutexes.RELEASED,
 };
 
 const changeDirection = (s, direction) => {
     const isOppositeDir = direction === oppositeDirection(s.direction);
-    if (isOppositeDir) {
+    if (isOppositeDir || s.dirMutex === dirMutexes.ACQUIRED) {
         return s;
     }
-    return Object.assign({}, s, { direction });
+    console.group('x');
+    console.log('cur: ', s.direction);
+    console.log('dir: ', direction);
+    console.groupEnd('x');
+    return Object.assign({}, s, { direction, dirMutex: dirMutexes.ACQUIRED });
 };
 
 const move = s => {
@@ -318,6 +331,7 @@ function main() {
     let { score } = state;
     let history = [state];
     const fps = new FpsCtrl(15, () => {
+        state.snake.dirMutex = dirMutexes.RELEASED;
         if (!isTravellingInPast && !state.snake.hasGameOver) {
             state = gameTick(state);
             history.push(state);
@@ -327,11 +341,11 @@ function main() {
             state = frame;
             history = newHistory;
         }
-        snakeRender.render(state);
         if (score !== state.score) {
             score = state.score;
             scoreEl.innerHTML = state.score;
         }
+        snakeRender.render(state);
     });
     fps.start();
 }
