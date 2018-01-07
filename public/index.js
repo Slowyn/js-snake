@@ -19,8 +19,6 @@ const oppositeDirection = dir => {
     }
 };
 
-const isVerticalDirection = dir => dir === directions.UP || dir === directions.DOWN;
-
 const gameSize = {
     width: 40,
     height: 20,
@@ -31,7 +29,7 @@ const createPoint = (x, y) => ({ x, y });
 const initialSnake = {
     length: 3,
     head: createPoint(10, 10),
-    body: [createPoint(8, 10), createPoint(9, 10)],
+    tail: [createPoint(8, 10), createPoint(9, 10)],
     direction: directions.RIGHT,
     hasGameOver: false,
 };
@@ -45,29 +43,29 @@ const changeDirection = (s, direction) => {
 };
 
 const move = s => {
-    const body = [...s.body.slice(1, s.body.length), createPoint(s.head.x, s.head.y)];
+    const tail = [...s.tail.slice(1, s.tail.length), createPoint(s.head.x, s.head.y)];
     switch (s.direction) {
         case directions.LEFT:
             return Object.assign({}, s, {
                 head: createPoint(s.head.x - 1, s.head.y),
-                body,
+                tail,
             });
         case directions.UP: {
             return Object.assign({}, s, {
                 head: createPoint(s.head.x, s.head.y - 1),
-                body,
+                tail,
             });
         }
         case directions.RIGHT: {
             return Object.assign({}, s, {
                 head: createPoint(s.head.x + 1, s.head.y),
-                body,
+                tail,
             });
         }
         case directions.DOWN: {
             return Object.assign({}, s, {
                 head: createPoint(s.head.x, s.head.y + 1),
-                body,
+                tail: tail,
             });
         }
         default:
@@ -77,38 +75,23 @@ const move = s => {
 
 const moveAndCheckBoundaries = (s, boundaries) => {
     const { x, y } = s.head;
-    const didCollide = s.body.some(p => p.x === x && p.y === y);
-    if (didCollide) {
+    const nextSnakeState = move(s);
+    const didCollideWithTail = s.tail.some(p => p.x === x && p.y === y);
+    const willCollideWithWall = nextSnakeState.head.x === -1
+        || nextSnakeState.head.x === boundaries.width
+        || nextSnakeState.head.y === -1
+        || nextSnakeState.head.y === boundaries.height;
+    const hasGameOver = didCollideWithTail || willCollideWithWall;
+    if (hasGameOver) {
         return Object.assign({}, s, {
-            hasGameOver: didCollide,
+            hasGameOver,
         });
     }
-    let newX = s.head.x;
-    let newY = s.head.y;
-    const { width, height } = boundaries;
-    const isVerticalDir = isVerticalDirection(s.direction);
-    if (x <= 0 && !isVerticalDir && s.direction !== directions.RIGHT) {
-        newX = width;
-    } else if (x >= width && !isVerticalDir && s.direction !== directions.LEFT) {
-        newX = 0;
-    }
-    if (y <= 0 && isVerticalDir && s.direction !== directions.DOWN) {
-        newY = height;
-    } else if (y >= height && isVerticalDir && s.direction !== directions.UP) {
-        newY = 0;
-    }
-    const didTeleport = newY !== s.head.y || newX !== s.head.x;
-    const newBody = didTeleport
-        ? [...s.body.slice(1, s.body.length), s.head]
-        : s.body;
-    return move(Object.assign({}, s, {
-        head: createPoint(newX, newY),
-        body: newBody,
-    }));
+    return nextSnakeState;
 };
 
 const createApple = (s, boundaries) => {
-    const fullSnake = [...s.body, s.head];
+    const fullSnake = [...s.tail, s.head];
     const field = Array
         .from({ length: boundaries.height }, (_, i) => Array.from({ length: boundaries.width }, (_, i) => i))
         .map((row, y) => {
@@ -126,7 +109,7 @@ const eatApple = s => {
     return Object.assign({}, s, {
         length: s.length + 1,
         head: createPoint(movedSnake.head.x, movedSnake.head.y),
-        body: [s.body[s.body.length - 1], ...movedSnake.body],
+        tail: [s.tail[s.tail.length - 1], ...movedSnake.tail],
     });
 };
 
@@ -219,7 +202,7 @@ class SnakeRender {
 
     drawSnake(snake) {
         const snakeColor = snake.hasGameOver ? '#ff2837' : '#CE5B20';
-        snake.body.forEach(p => this.drawRect(p, snakeColor));
+        snake.tail.forEach(p => this.drawRect(p, snakeColor));
         this.drawRect(snake.head, snakeColor);
     }
 
