@@ -48,10 +48,6 @@ const changeDirection = (s, direction) => {
     if (isOppositeDir || s.dirMutex === dirMutexes.ACQUIRED) {
         return s;
     }
-    console.group('x');
-    console.log('cur: ', s.direction);
-    console.log('dir: ', direction);
-    console.groupEnd('x');
     return Object.assign({}, s, { direction, dirMutex: dirMutexes.ACQUIRED });
 };
 
