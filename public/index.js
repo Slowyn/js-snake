@@ -65,7 +65,7 @@ const move = s => {
         case directions.DOWN: {
             return Object.assign({}, s, {
                 head: createPoint(s.head.x, s.head.y + 1),
-                tail: tail,
+                tail,
             });
         }
         default:
@@ -104,8 +104,8 @@ const createApple = (s, boundaries) => {
     return createPoint(x, y);
 };
 
-const eatApple = s => {
-    const movedSnake = move(s);
+const eatApple = (s, boundaries) => {
+    const movedSnake = moveAndCheckBoundaries(s, boundaries);
     return Object.assign({}, s, {
         length: s.length + 1,
         head: createPoint(movedSnake.head.x, movedSnake.head.y),
@@ -129,7 +129,7 @@ const gameTick = game => {
     }
 
     if (hasApple && hasBeenAppleEaten(newSnakeState, newAppleState) && !newSnakeState.hasGameOver) {
-        newSnakeState = eatApple(newSnakeState);
+        newSnakeState = eatApple(game.snake, game.boundaries);
         newAppleState = removeApple();
         newScore += 1;
     }
