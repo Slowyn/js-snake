@@ -124,8 +124,7 @@ const gameTick = game => {
     let newSnakeState = moveAndCheckBoundaries(game.snake, game.boundaries);
     let newAppleState = game.apple;
     let newScore = game.score;
-    const shouldAppleAppear = Math.random();
-    if (!hasApple && shouldAppleAppear > 0.8) {
+    if (!hasApple) {
         newAppleState = createApple(game.snake, game.boundaries);
     }
 
