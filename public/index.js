@@ -104,8 +104,8 @@ const createApple = (s, boundaries) => {
     return createPoint(x, y);
 };
 
-const eatApple = (s, boundaries) => {
-    const movedSnake = moveAndCheckBoundaries(s, boundaries);
+const eatApple = (s) => {
+    const movedSnake = move(s);
     return Object.assign({}, s, {
         length: s.length + 1,
         head: createPoint(movedSnake.head.x, movedSnake.head.y),
@@ -129,7 +129,7 @@ const gameTick = game => {
     }
 
     if (hasApple && hasBeenAppleEaten(newSnakeState, newAppleState) && !newSnakeState.hasGameOver) {
-        newSnakeState = eatApple(game.snake, game.boundaries);
+        newSnakeState = eatApple(game.snake);
         newAppleState = removeApple();
         newScore += 1;
     }
