@@ -100,17 +100,15 @@ const moveAndCheckBoundaries = (s, boundaries) => {
 };
 
 const createApple = (s, boundaries) => {
+    const {width, height} = boundaries;
     const fullSnake = [...s.tail, s.head];
-    const field = Array
-        .from({ length: boundaries.height }, (_, i) => Array.from({ length: boundaries.width }, (_, i) => i))
-        .map((row, y) => {
-            if (!fullSnake.some(p => p.y === y)) return row;
-            return row.filter(x => !fullSnake.some(p => p.x === x));
-        })
-        .filter(row => row.length);
-    const y = getRandomInt(0, field.length - 1);
-    const x = field[y][getRandomInt(0, field[y].length - 1)];
-    return createPoint(x, y);
+    const snakeCoordIndices = new Set(fullSnake.map(({x, y}) => x + y * width));
+    const candidates = Array(width * height)
+        .fill(0)
+        .map((_, idx) => idx)
+        .filter(idx => !snakeCoordIndices.has(idx));
+    const chosenIdx = candidates[getRandomInt(0, candidates.length - 1)];
+    return createPoint(chosenIdx % width, Math.floor(chosenIdx / width));
 };
 
 const eatApple = (s) => {
@@ -347,3 +345,4 @@ function main() {
 }
 
 document.addEventListener('DOMContentLoaded', main);
+
